@@ -7,6 +7,8 @@
 #include "stack.h"
 #include "math.h"
 
+char newLevel;
+
 int isoperator(char c) {
     return c == '+' || c == '-' || c == '*' || c == '/' || c == '^' || c == '(' || c == ')' ||
         c == '!' || c == 'V' || c == 's' || c == 'c' || c == '%';
@@ -59,7 +61,7 @@ void handleOperator(char c, struct Stack *operators, struct Stack *numbers) {
     struct Stack *secondElement;
     double firstNumber;
     double secondNumber;
-    double *result = (double *)malloc(firstNumber * sizeof(double));
+    double *result = (double *)malloc(sizeof(double));
     switch (previousOperator) {
         case '+':
             firstElement = pop(numbers);
@@ -75,6 +77,29 @@ void handleOperator(char c, struct Stack *operators, struct Stack *numbers) {
 
             break;
         case '-':
+            // if (newLevel == 0) {
+            //     firstElement = pop(numbers);
+            //     secondElement = pop(numbers);
+            //     firstNumber = *((double *)(firstElement->data));
+            //     secondNumber = *((double *)(secondElement->data));
+            //     *result = secondNumber - firstNumber;
+            //     push(numbers, result);
+
+            //     removeElement(firstElement);
+            //     removeElement(secondElement);
+            //     removeElement(previousElement);
+
+            //     break;
+            // } else {
+            //     firstElement = pop(numbers);
+            //     firstNumber = *((double *)(firstElement->data));
+            //     *result = firstNumber * (-1);
+            //     push(numbers, result);
+
+            //     removeElement(firstElement);
+
+            //     break;
+            // }
             firstElement = pop(numbers);
             secondElement = pop(numbers);
             firstNumber = *((double *)(firstElement->data));
@@ -90,9 +115,8 @@ void handleOperator(char c, struct Stack *operators, struct Stack *numbers) {
         case '*':
             firstElement = pop(numbers);
             secondElement = pop(numbers);
-            double firstNumber = *((double *)(firstElement->data));
-            double secondNumber = *((double *)(secondElement->data));            
-            double *result = (double *)malloc(firstNumber * sizeof(double));
+            firstNumber = *((double *)(firstElement->data));
+            secondNumber = *((double *)(secondElement->data));
             *result = secondNumber * firstNumber;
             push(numbers, result);
 
@@ -106,7 +130,7 @@ void handleOperator(char c, struct Stack *operators, struct Stack *numbers) {
             secondElement = pop(numbers);
             firstNumber = *((double *)(firstElement->data));
             secondNumber = *((double *)(secondElement->data));
-            *result = secondNumber / firstNumber;
+            *result = (double)(secondNumber / firstNumber);
             push(numbers, result);
 
             removeElement(firstElement);
@@ -119,7 +143,7 @@ void handleOperator(char c, struct Stack *operators, struct Stack *numbers) {
             secondElement = pop(numbers);
             firstNumber = *((double *)(firstElement->data));
             secondNumber = *((double *)(secondElement->data));
-            *result = pow(firstNumber, secondNumber);
+            *result = pow(secondNumber, firstNumber);
             push(numbers, result);
 
             removeElement(firstElement);
@@ -197,7 +221,7 @@ void handleOperator(char c, struct Stack *operators, struct Stack *numbers) {
 }
 
 void parseInput(char *input) {
-    char newInput[strlen(input) + 1];
+    char newInput[strlen(input) * 2 + 1];
     char *word;
     while ((word = strstr(input, "sin")) != NULL) {
         memcpy(newInput, input, (word - input) + 1);
@@ -215,46 +239,70 @@ void parseInput(char *input) {
         memcpy(newInput + (word - input) + 1, word + 4, strlen(word + 4) + 1);
         memcpy(input, newInput, strlen(newInput) + 1);
     }
-    while ((word = strstr(input, " ")) != NULL) {
+    while ((word = strstr(input, " ")) != NULL ||
+                (word = strstr(input, "\n"))!= NULL) {
         memcpy(newInput, input, (word - input));
         memcpy(newInput + (word - input), word + 1, strlen(word + 1) + 1);
+        memcpy(input, newInput, strlen(newInput) + 1);
+    }
+    while ((word = strstr(input, "-(")) != NULL) {
+        memcpy(newInput, input, (word - input) + 1);
+        memcpy(newInput + (word - input) + 3, word + 1, strlen(word + 1) + 1);
+        newInput[word - input + 1] = '1';
+        newInput[word - input + 2] = '*';
         memcpy(input, newInput, strlen(newInput) + 1);
     }
 }
 
 int main(int argc, char *argv[]) {
 
+    newLevel = 1;
+
     char *input;
     if (argc < 2) {
         printf("Not enough arguments, please, enter a line:\n");
-        input = (char *)malloc(sizeof(char) * 2500);
+        input = (char *)malloc(sizeof(char) * 4076);
+        gets(input);
     } else {
         int inputSize = 0;
 
         for (int i = 1; i < argc; i++)
             inputSize += strlen(argv[i]);
 
-        input = (char *)malloc(sizeof(char) * inputSize);
+        input = (char *)malloc(sizeof(char) * inputSize * 2);
 
         for (int i = 1; i < argc; i++)
             strcpy(input, argv[i]);
 
         input[inputSize - 1] = '\0';
-        parseInput(input);
     }
+
+    parseInput(input);
 
     struct Stack *numbers = createStack();
     struct Stack *operators = createStack();
     
     for (int i = 0; i < strlen(input) + 1; i++) {
-        if (isdigit(input[i])) {
+        if (isdigit(input[i]) || (input[i] == '-' && newLevel)) {
             double *newNumber = (double *)malloc(sizeof(double));
             char *endPointer;
             *newNumber = strtod(input + i, &endPointer);
-            i += endPointer - (input + i);
+            i += endPointer - (input + i) - 1;
             push(numbers, newNumber);
+            newLevel = 0;
         } else if (input[i] == '\0' || isoperator(input[i])) {
-            handleOperator(input[i], operators, numbers);
+            if (input[i] == '(') {
+                newLevel = 1;
+            }
+            // } else if (input[i] != '-') {
+            //     newLevel = 0;
+            // }
+            if (input[i] == '\0') {
+                while (operators->data != NULL)
+                    handleOperator(input[i], operators, numbers);
+            } else {
+                handleOperator(input[i], operators, numbers);
+            }
         } else {
             fprintf(stderr, "Invalid input");
             return 1;

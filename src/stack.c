@@ -1,4 +1,5 @@
 #include <stdlib.h>
+#include <string.h>
 
 #include "stack.h"
 
@@ -18,7 +19,14 @@ struct Stack *top(struct Stack *stack) {
 
 struct Stack *pop(struct Stack *stack) {
 	struct Stack *nextElement = stack->nextElement;
-	while (nextElement != NULL) {
+	if (nextElement == NULL) {
+		struct Stack *copyStack = (struct Stack *)malloc(sizeof(struct Stack));
+		memcpy(copyStack, stack, sizeof(struct Stack));
+		stack->data = NULL;
+		stack->nextElement = NULL;
+		return copyStack;
+	}
+	while (nextElement->nextElement != NULL) {
 		stack = nextElement;
 		nextElement = stack->nextElement;
 	}
