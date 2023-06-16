@@ -1,4 +1,4 @@
-FLAGS = -lgsl -lgslcblas -lm -Wall -g
+FLAGS = -lm -Wall -g
 
 .PHONY: all clear run
 

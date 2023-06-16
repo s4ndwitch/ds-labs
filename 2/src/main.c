@@ -241,7 +241,7 @@ int main(int argc, char *argv[]) {
     if (argc < 2) {
         printf("Not enough arguments, please, enter a line:\n");
         input = (char *)malloc(sizeof(char) * 4076);
-        gets(input);
+        fgets(input, 4076, stdin);
     } else {
         int inputSize = 0;
 
@@ -257,11 +257,16 @@ int main(int argc, char *argv[]) {
     }
 
     parseInput(input);
+    printf("%s\n", input);
 
     struct Stack *numbers = createStack();
     struct Stack *operators = createStack();
-    
+
     for (int i = 0; i < strlen(input) + 1; i++) {
+        printf("%c = %d\n", input[i], input[i]);
+    }
+    for (int i = 0; i < strlen(input) + 1; i++) {
+        printf("Handling %c = %d\n", input[i], input[i]);
         if (isdigit(input[i]) || (input[i] == '-' && newLevel)) {
             double *newNumber = (double *)malloc(sizeof(double));
             char *endPointer;
@@ -286,6 +291,7 @@ int main(int argc, char *argv[]) {
             double *newNumber = (double *)malloc(sizeof(double));
             scanf("%lf", newNumber);
             push(numbers, newNumber);
+            newLevel = 0;
         }
     }
     printf("%f\n", *((double *)(pop(numbers)->data)));
