@@ -257,7 +257,6 @@ int main(int argc, char *argv[]) {
     }
 
     parseInput(input);
-    printf("%s\n", input);
 
     struct Stack *numbers = createStack();
     struct Stack *operators = createStack();
@@ -266,7 +265,6 @@ int main(int argc, char *argv[]) {
         printf("%c = %d\n", input[i], input[i]);
     }
     for (int i = 0; i < strlen(input) + 1; i++) {
-        printf("Handling %c = %d\n", input[i], input[i]);
         if (isdigit(input[i]) || (input[i] == '-' && newLevel)) {
             double *newNumber = (double *)malloc(sizeof(double));
             char *endPointer;

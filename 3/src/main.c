@@ -2,103 +2,108 @@
 #include <string.h>
 #include <stdlib.h>
 
-struct Book
+struct Event
 {
-    char *title;
-    char *authors;
+    char *description;
+    char *point;
     int year;
-    char *distributor;
-    int rate;
-    int cost;
+    int month;
+    int day;
+    int hour;
+    int minute;
     int ID;
 
-    struct Book *smaller;
-    struct Book *larger;
-    struct Book *parent;
+    struct Event *smaller;
+    struct Event *larger;
+    struct Event *parent;
 };
 
-struct Book *books = NULL;
-int globalBooksCounter = 0;
+struct Event *events = NULL;
+int globalEventsCounter = 0;
 int globalIDCounter = 0;
 
-struct Book *createBook(char *title, char *authors, int year, char *distributor, int rate, int cost)
+struct Event *createEvent(char *description, char *point, int year, int month, int day, int hour, int minute)
 {
-    struct Book *newBook = (struct Book *)malloc(sizeof(struct Book));
+    struct Event *newEvent = (struct Event *)malloc(sizeof(struct Event));
 
-    if (newBook == NULL)
+    if (newEvent == NULL)
     {
         fprintf(stderr, "Could not allocate memory\n");
         return NULL;
     }
 
-    newBook->title = (char *)malloc(sizeof(char) * (strlen(title) + 1));
-    newBook->authors = (char *)malloc(sizeof(char) * (strlen(authors) + 1));
-    newBook->distributor = (char *)malloc(sizeof(char) * (strlen(distributor) + 1));
+    newEvent->description = (char *)malloc(sizeof(char) * (strlen(description) + 1));
+    newEvent->point = (char *)malloc(sizeof(char) * (strlen(point) + 1));
 
-    newBook->title = title;
-    newBook->authors = authors;
-    newBook->year = year;
-    newBook->distributor = distributor;
-    newBook->rate = rate;
-    newBook->cost = cost;
-    newBook->ID = globalIDCounter++;
+    newEvent->description = description;
+    newEvent->point = point;
+    newEvent->year = year;
+    newEvent->month = month;
+    newEvent->day = day;
+    newEvent->hour = hour;
+    newEvent->minute = minute;
+    newEvent->ID = globalIDCounter++;
 
-    newBook->smaller = NULL;
-    newBook->larger = NULL;
-    newBook->parent = 0x0;
+    newEvent->smaller = NULL;
+    newEvent->larger = NULL;
+    newEvent->parent = 0x0;
 
-    return newBook;
+    return newEvent;
 }
 
 void normiliseRoot()
 {
-    while (books->parent != NULL)
-        books = books->parent;
+    while (events->parent != NULL)
+        events = events->parent;
 }
 
-int compareBooksByName(struct Book *first, struct Book *second)
+int compareEventsByDescription(struct Event *first, struct Event *second)
 {
 
     if (first == NULL || second == NULL)
         return 0;
 
-    if (strcmp(first->title, second->title))
-        return strcmp(first->title, second->title);
-    if (strcmp(first->authors, second->authors))
-        return strcmp(first->authors, second->authors);
+    if (strcmp(first->description, second->description))
+        return strcmp(first->description, second->description);
+    if (strcmp(first->point, second->point))
+        return strcmp(first->point, second->point);
     if (first->year - second->year)
         return first->year - second->year;
-    if (strcmp(first->distributor, second->distributor))
-        return strcmp(first->distributor, second->distributor);
-    if (first->rate - second->rate)
-        return first->rate - second->rate;
-    if (first->cost - second->cost)
-        return first->cost - second->cost;
+    if (first->month - second->month)
+        return first->month - second->month;
+    if (first->day - second->day)
+        return first->day - second->day;
+    if (first->hour - second->hour)
+        return first->hour - second->hour;
+    if (first->minute - second->minute)
+        return first->minute - second->minute;
     return 0;
 }
 
-int compareBooksByAuthors(struct Book *first, struct Book *second)
+int compareEventsByPoint(struct Event *first, struct Event *second)
 {
 
     if (first == NULL || second == NULL)
         return 0;
 
-    if (strcmp(first->authors, second->authors))
-        return strcmp(first->authors, second->authors);
-    if (strcmp(first->title, second->title))
-        return strcmp(first->title, second->title);
+    if (strcmp(first->point, second->point))
+        return strcmp(first->point, second->point);
+    if (strcmp(first->description, second->description))
+        return strcmp(first->description, second->description);
     if (first->year - second->year)
         return first->year - second->year;
-    if (strcmp(first->distributor, second->distributor))
-        return strcmp(first->distributor, second->distributor);
-    if (first->rate - second->rate)
-        return first->rate - second->rate;
-    if (first->cost - second->cost)
-        return first->cost - second->cost;
+    if (first->month - second->month)
+        return first->month - second->month;
+    if (first->day - second->day)
+        return first->day - second->day;
+    if (first->hour - second->hour)
+        return first->hour - second->hour;
+    if (first->minute - second->minute)
+        return first->minute - second->minute;
     return 0;
 }
 
-int compareBooksByYear(struct Book *first, struct Book *second)
+int compareEventsByYear(struct Event *first, struct Event *second)
 {
 
     if (first == NULL || second == NULL)
@@ -106,83 +111,114 @@ int compareBooksByYear(struct Book *first, struct Book *second)
 
     if (first->year - second->year)
         return first->year - second->year;
-    if (strcmp(first->title, second->title))
-        return strcmp(first->title, second->title);
-    if (strcmp(first->authors, second->authors))
-        return strcmp(first->authors, second->authors);
-    if (strcmp(first->distributor, second->distributor))
-        return strcmp(first->distributor, second->distributor);
-    if (first->rate - second->rate)
-        return first->rate - second->rate;
-    if (first->cost - second->cost)
-        return first->cost - second->cost;
+    if (strcmp(first->description, second->description))
+        return strcmp(first->description, second->description);
+    if (strcmp(first->point, second->point))
+        return strcmp(first->point, second->point);
+    if (first->month - second->month)
+        return first->month - second->month;
+    if (first->day - second->day)
+        return first->day - second->day;
+    if (first->hour - second->hour)
+        return first->hour - second->hour;
+    if (first->minute - second->minute)
+        return first->minute - second->minute;
     return 0;
 }
 
-int compareBooksByDistributor(struct Book *first, struct Book *second)
+int compareEventsByMonth(struct Event *first, struct Event *second)
 {
 
     if (first == NULL || second == NULL)
         return 0;
 
-    if (strcmp(first->distributor, second->distributor))
-        return strcmp(first->distributor, second->distributor);
-    if (strcmp(first->title, second->title))
-        return strcmp(first->title, second->title);
-    if (strcmp(first->authors, second->authors))
-        return strcmp(first->authors, second->authors);
+    if (first->month - second->month)
+        return first->month - second->month;
+    if (strcmp(first->description, second->description))
+        return strcmp(first->description, second->description);
+    if (strcmp(first->point, second->point))
+        return strcmp(first->point, second->point);
     if (first->year - second->year)
         return first->year - second->year;
-    if (first->rate - second->rate)
-        return first->rate - second->rate;
-    if (first->cost - second->cost)
-        return first->cost - second->cost;
+    if (first->day - second->day)
+        return first->day - second->day;
+    if (first->hour - second->hour)
+        return first->hour - second->hour;
+    if (first->minute - second->minute)
+        return first->minute - second->minute;
     return 0;
 }
 
-int compareBooksByRate(struct Book *first, struct Book *second)
+int compareEventsByDay(struct Event *first, struct Event *second)
 {
 
     if (first == NULL || second == NULL)
         return 0;
 
-    if (first->rate - second->rate)
-        return first->rate - second->rate;
-    if (strcmp(first->title, second->title))
-        return strcmp(first->title, second->title);
-    if (strcmp(first->authors, second->authors))
-        return strcmp(first->authors, second->authors);
+    if (first->day - second->day)
+        return first->day - second->day;
+    if (strcmp(first->description, second->description))
+        return strcmp(first->description, second->description);
+    if (strcmp(first->point, second->point))
+        return strcmp(first->point, second->point);
     if (first->year - second->year)
         return first->year - second->year;
-    if (strcmp(first->distributor, second->distributor))
-        return strcmp(first->distributor, second->distributor);
-    if (first->cost - second->cost)
-        return first->cost - second->cost;
+    if (first->month - second->month)
+        return first->month - second->month;
+    if (first->hour - second->hour)
+        return first->hour - second->hour;
+    if (first->minute - second->minute)
+        return first->minute - second->minute;
     return 0;
 }
 
-int compareBooksByCost(struct Book *first, struct Book *second)
+int compareEventsByHour(struct Event *first, struct Event *second)
 {
 
     if (first == NULL || second == NULL)
         return 0;
 
-    if (first->cost - second->cost)
-        return first->cost - second->cost;
-    if (first->rate - second->rate)
-        return first->rate - second->rate;
-    if (strcmp(first->title, second->title))
-        return strcmp(first->title, second->title);
-    if (strcmp(first->authors, second->authors))
-        return strcmp(first->authors, second->authors);
+    if (first->hour - second->hour)
+        return first->hour - second->hour;
+    if (strcmp(first->description, second->description))
+        return strcmp(first->description, second->description);
+    if (strcmp(first->point, second->point))
+        return strcmp(first->point, second->point);
     if (first->year - second->year)
         return first->year - second->year;
-    if (strcmp(first->distributor, second->distributor))
-        return strcmp(first->distributor, second->distributor);
+    if (first->month - second->month)
+        return first->month - second->month;
+    if (first->day - second->day)
+        return first->day - second->day;
+    if (first->minute - second->minute)
+        return first->minute - second->minute;
     return 0;
 }
 
-int (*comparisonFunction)(struct Book *, struct Book *) = compareBooksByName;
+int compareEventsByMinute(struct Event *first, struct Event *second)
+{
+
+    if (first == NULL || second == NULL)
+        return 0;
+
+    if (first->minute - second->minute)
+        return first->minute - second->minute;
+    if (strcmp(first->description, second->description))
+        return strcmp(first->description, second->description);
+    if (strcmp(first->point, second->point))
+        return strcmp(first->point, second->point);
+    if (first->year - second->year)
+        return first->year - second->year;
+    if (first->month - second->month)
+        return first->month - second->month;
+    if (first->day - second->day)
+        return first->day - second->day;
+    if (first->hour - second->hour)
+        return first->hour - second->hour;
+    return 0;
+}
+
+int (*comparisonFunction)(struct Event *, struct Event *) = compareEventsByDescription;
 
 void printUsage()
 {
@@ -200,29 +236,7 @@ int checkInput(int argc, char *argv[])
     return 0;
 }
 
-void fastAddBook(int argc, char *argv[])
-{
-
-    FILE *inputFile = NULL;
-    for (int i = 0; i < argc - 1; i++)
-    {
-        if (!strcmp(argv[i], "-i") ||
-            !strcmp(argv[i], "--input"))
-            inputFile = fopen(argv[i + 1], "r");
-    }
-
-    if (inputFile == NULL)
-    {
-        fprintf(stderr, "Could not open input file\n");
-        return;
-    }
-
-    fclose(inputFile);
-
-    return;
-}
-
-void boundBooks(struct Book *child, struct Book *parent, int side)
+void boundEvents(struct Event *child, struct Event *parent, int side)
 {
 
     if (parent != NULL)
@@ -241,31 +255,31 @@ void boundBooks(struct Book *child, struct Book *parent, int side)
         child->parent = parent;
 }
 
-int countLevel(struct Book *book)
+int countLevel(struct Event *event)
 {
 
-    if (book == NULL)
+    if (event == NULL)
         return 0;
 
-    if (book->larger == NULL && book->smaller == NULL)
+    if (event->larger == NULL && event->smaller == NULL)
         return 1;
-    int resultLarger = book->larger == NULL ? 0 : countLevel(book->larger);
-    int resultSmaller = book->smaller == NULL ? 0 : countLevel(book->smaller);
+    int resultLarger = event->larger == NULL ? 0 : countLevel(event->larger);
+    int resultSmaller = event->smaller == NULL ? 0 : countLevel(event->smaller);
     return resultLarger > resultSmaller ? resultLarger + 1 : resultSmaller + 1;
 }
 
-void balanceTree(struct Book *book)
+void balanceTree(struct Event *event)
 { // A
 
-    int resultLarger = countLevel(book->larger);
-    int resultSmaller = countLevel(book->smaller);
+    int resultLarger = countLevel(event->larger);
+    int resultSmaller = countLevel(event->smaller);
 
     if (abs(resultLarger - resultSmaller) < 2)
         return;
 
-    struct Book *largerTree = resultLarger > resultSmaller ? // B
-                                  book->larger
-                                                           : book->smaller;
+    struct Event *largerTree = resultLarger > resultSmaller ? // B
+                                  event->larger
+                                                           : event->smaller;
 
     int countLeft = countLevel(largerTree->smaller);
     int countRight = countLevel(largerTree->larger);
@@ -274,228 +288,231 @@ void balanceTree(struct Book *book)
     {
         if (countLeft < countRight)
         {
-            struct Book *safeChild = largerTree->smaller;
-            boundBooks(largerTree, book->parent,
-                       comparisonFunction(book, book->parent) < 0 ? 0 : 1);
-            boundBooks(safeChild, book, 1);
-            boundBooks(book, largerTree, 0);
+            struct Event *safeChild = largerTree->smaller;
+            boundEvents(largerTree, event->parent,
+                       comparisonFunction(event, event->parent) < 0 ? 0 : 1);
+            boundEvents(safeChild, event, 1);
+            boundEvents(event, largerTree, 0);
         }
         else if (countLeft > countRight)
         {
             // largerTree->smaller -- C
-            struct Book *safeLeft = largerTree->smaller->smaller;
-            struct Book *safeRight = largerTree->smaller->larger;
+            struct Event *safeLeft = largerTree->smaller->smaller;
+            struct Event *safeRight = largerTree->smaller->larger;
 
-            boundBooks(largerTree->smaller, book->parent,
-                       comparisonFunction(book, book->parent) < 0 ? 0 : 1);
+            boundEvents(largerTree->smaller, event->parent,
+                       comparisonFunction(event, event->parent) < 0 ? 0 : 1);
 
-            boundBooks(largerTree, largerTree->smaller, 1);
-            boundBooks(book, largerTree->smaller, 0);
+            boundEvents(largerTree, largerTree->smaller, 1);
+            boundEvents(event, largerTree->smaller, 0);
 
-            boundBooks(safeLeft, book, 1);
-            boundBooks(safeRight, largerTree, 0);
+            boundEvents(safeLeft, event, 1);
+            boundEvents(safeRight, largerTree, 0);
         }
     }
     else
     {
         if (countLeft > countRight)
         {
-            struct Book *safeChild = largerTree->larger;
-            boundBooks(largerTree, book->parent,
-                       comparisonFunction(book, book->parent) < 0 ? 1 : 0);
-            boundBooks(book, largerTree, 0);
-            boundBooks(safeChild, book, 1);
+            struct Event *safeChild = largerTree->larger;
+            boundEvents(largerTree, event->parent,
+                       comparisonFunction(event, event->parent) < 0 ? 1 : 0);
+            boundEvents(event, largerTree, 0);
+            boundEvents(safeChild, event, 1);
         }
         else if (countLeft < countRight)
         {
             // largerTree->larger -- C
-            struct Book *safeLeft = largerTree->larger->smaller;
-            struct Book *safeRight = largerTree->larger->larger;
+            struct Event *safeLeft = largerTree->larger->smaller;
+            struct Event *safeRight = largerTree->larger->larger;
 
-            boundBooks(largerTree->larger, book->parent,
-                       comparisonFunction(book, book->parent) < 0 ? 1 : 0);
+            boundEvents(largerTree->larger, event->parent,
+                       comparisonFunction(event, event->parent) < 0 ? 1 : 0);
 
-            boundBooks(largerTree, largerTree->larger, 0);
-            boundBooks(book, largerTree->larger, 1);
+            boundEvents(largerTree, largerTree->larger, 0);
+            boundEvents(event, largerTree->larger, 1);
 
-            boundBooks(safeLeft, largerTree, 0);
-            boundBooks(safeRight, book, 1);
+            boundEvents(safeLeft, largerTree, 0);
+            boundEvents(safeRight, event, 1);
         }
     }
 
     normiliseRoot();
 }
 
-void recursiveBalance(struct Book *book)
+void recursiveBalance(struct Event *event)
 {
 
-    if (book == NULL)
+    if (event == NULL)
         return;
 
-    balanceTree(book);
-    recursiveBalance(book->smaller);
-    recursiveBalance(book->larger);
+    balanceTree(event);
+    recursiveBalance(event->smaller);
+    recursiveBalance(event->larger);
 }
 
-void addBook(struct Book *book, struct Book **bookPlace)
+void addEvent(struct Event *event, struct Event **eventPlace)
 {
 
-    if (*bookPlace == NULL)
+    if (*eventPlace == NULL)
     {
-        *bookPlace = book;
-        globalBooksCounter += 1;
+        *eventPlace = event;
+        globalEventsCounter += 1;
         return;
     }
 
-    if (book == NULL)
+    if (event == NULL)
         return;
 
-    int result = comparisonFunction(book, *bookPlace);
+    int result = comparisonFunction(event, *eventPlace);
     if (result > 0)
     {
-        if ((*bookPlace)->larger == NULL)
-            book->parent = *bookPlace;
-        addBook(book, &((*bookPlace)->larger));
+        if ((*eventPlace)->larger == NULL)
+            event->parent = *eventPlace;
+        addEvent(event, &((*eventPlace)->larger));
     }
     else if (result < 0)
     {
-        if ((*bookPlace)->smaller == NULL)
-            book->parent = *bookPlace;
-        addBook(book, &((*bookPlace)->smaller));
+        if ((*eventPlace)->smaller == NULL)
+            event->parent = *eventPlace;
+        addEvent(event, &((*eventPlace)->smaller));
     }
     else
     {
-        printf("[Duplicate located: %s]\n", book->title);
+        printf("[Duplicate located: %s]\n", event->description);
     }
 
-    balanceTree(*bookPlace);
+    balanceTree(*eventPlace);
 }
 
-struct Book *findBook(struct Book *book, struct Book *node)
+struct Event *findEvent(struct Event *event, struct Event *node)
 {
 
     if (node == NULL)
         return NULL;
 
-    int result = comparisonFunction(book, node);
+    int result = comparisonFunction(event, node);
     if (result > 0)
-        return findBook(book, node->larger);
+        return findEvent(event, node->larger);
     else if (result < 0)
-        return findBook(book, node->smaller);
+        return findEvent(event, node->smaller);
     else
         return node;
 }
 
-void deleteBook(struct Book *book, struct Book *node)
+void deleteEvent(struct Event *event, struct Event *node)
 {
 
     if (node == NULL)
         return;
 
-    book = findBook(book, node);
+    event = findEvent(event, node);
 
-    if (book == NULL)
+    if (event == NULL)
         return;
 
-    if (book->parent != NULL)
+    if (event->parent != NULL)
     {
-        int result = comparisonFunction(book, book->parent);
+        int result = comparisonFunction(event, event->parent);
         if (result > 0)
-            book->parent->larger = NULL;
+            event->parent->larger = NULL;
         else
-            book->parent->smaller = NULL;
+            event->parent->smaller = NULL;
     }
 
-    if (book->larger == NULL)
+    if (event->larger == NULL)
     {
-        boundBooks(book->smaller, book->parent,
-                   comparisonFunction(book->smaller, book->parent));
-        if (book == books)
-            books = book->smaller;
-        free(book);
-        globalBooksCounter -= 1;
+        boundEvents(event->smaller, event->parent,
+                   comparisonFunction(event->smaller, event->parent));
+        if (event == events)
+            events = event->smaller;
+        free(event);
+        globalEventsCounter -= 1;
         return;
     }
 
-    boundBooks(book->larger, book->parent,
-               comparisonFunction(book->larger, book->parent));
-    addBook(book->larger->smaller, &(book->smaller));
-    boundBooks(book->smaller, book->larger, 0);
+    boundEvents(event->larger, event->parent,
+               comparisonFunction(event->larger, event->parent));
+    addEvent(event->larger->smaller, &(event->smaller));
+    boundEvents(event->smaller, event->larger, 0);
 
-    if (book == books)
-        books = book->larger;
+    if (event == events)
+        events = event->larger;
 
-    if (node == books)
-        globalBooksCounter -= 1;
-    free(book);
+    if (node == events)
+        globalEventsCounter -= 1;
+    free(event);
 
-    recursiveBalance(books);
+    recursiveBalance(events);
 
     normiliseRoot();
 }
 
 void printHelp()
 {
-    printf("\tadd\t\t\t\t\tStart adding a book\n");
-    printf("\tdelete ID\t\t\t\tDelete a book with the given ID\n");
-    printf("\tedit ID\t\t\t\t\tEdit a book with the given ID\n");
-    printf("\tsearch\t\t\t\t\tSearch for a book by the given data\n");
-    printf("\tprint [sort field_type]\t\t\tPrint all the books in given order\n");
+    printf("\tadd\t\t\t\t\tStart adding an event\n");
+    printf("\tdelete ID\t\t\t\tDelete an event with the given ID\n");
+    printf("\tsearch\t\t\t\t\tSearch for an event by the given data\n");
+    printf("\tprint [sort field_type]\t\t\tPrint all the events in given order\n");
     printf("\tsave file\t\t\t\tSave all the data in a file\n");
     printf("\tload file\t\t\t\tLoad all the data from a file\n");
     return;
 }
 
-void resortBooks(char *fieldName)
+void resortEvents(char *fieldName)
 {
 
-    if (!strncmp(fieldName, "title", 5))
+    if (!strncmp(fieldName, "descriptio", 12))
     {
-        comparisonFunction = compareBooksByName;
+        comparisonFunction = compareEventsByDescription;
     }
-    else if (!strncmp(fieldName, "authors", 7))
+    else if (!strncmp(fieldName, "point", 5))
     {
-        comparisonFunction = compareBooksByAuthors;
+        comparisonFunction = compareEventsByPoint;
     }
     else if (!strncmp(fieldName, "year", 4))
     {
-        comparisonFunction = compareBooksByYear;
+        comparisonFunction = compareEventsByYear;
     }
-    else if (!strncmp(fieldName, "distributor", 11))
+    else if (!strncmp(fieldName, "month", 5))
     {
-        comparisonFunction = compareBooksByDistributor;
+        comparisonFunction = compareEventsByMonth;
     }
-    else if (!strncmp(fieldName, "rate", 4))
+    else if (!strncmp(fieldName, "day", 3))
     {
-        comparisonFunction = compareBooksByRate;
+        comparisonFunction = compareEventsByDay;
     }
-    else if (!strncmp(fieldName, "cost", 4))
+    else if (!strncmp(fieldName, "hour", 4))
     {
-        comparisonFunction = compareBooksByCost;
+        comparisonFunction = compareEventsByHour;
+    }
+    else if (!strncmp(fieldName, "minute", 6))
+    {
+        comparisonFunction = compareEventsByMinute;
     }
     else
     {
         return;
     }
 
-    struct Book *oldRoot = books;
-    books = NULL;
+    struct Event *oldRoot = events;
+    events = NULL;
 
     int idCounterSave = globalIDCounter;
 
     while (oldRoot != NULL)
     {
 
-        struct Book *book = createBook(oldRoot->title, oldRoot->authors, oldRoot->year,
-                                       oldRoot->distributor, oldRoot->rate, oldRoot->cost);
-        addBook(book, &books);
-        book->ID = oldRoot->ID;
-        struct Book *save;
+        struct Event *event = createEvent(oldRoot->description, oldRoot->point, oldRoot->year,
+                                       oldRoot->month, oldRoot->day, oldRoot->hour, oldRoot->minute);
+        addEvent(event, &events);
+        event->ID = oldRoot->ID;
+        struct Event *save;
         if (oldRoot->larger == NULL)
             save = oldRoot->smaller;
         else
             save = oldRoot->larger;
-        deleteBook(oldRoot, oldRoot);
+        deleteEvent(oldRoot, oldRoot);
         oldRoot = save;
         if (oldRoot == NULL)
             continue;
@@ -507,93 +524,106 @@ void resortBooks(char *fieldName)
     globalIDCounter = idCounterSave;
 }
 
-void printBook(struct Book *book, FILE *stream)
+void printEvent(struct Event *event, FILE *stream)
 {
 
-    fprintf(stream, "Title: %s\n", book->title);
-    fprintf(stream, "Author(s): %s\n", book->authors);
-    fprintf(stream, "Year: %d\n", book->year);
-    fprintf(stream, "distributor: %s\n", book->distributor);
-    fprintf(stream, "Rate: %d\n", book->rate);
-    fprintf(stream, "Cost: %d\n", book->cost);
+    fprintf(stream, "Description: %s\n", event->description);
+    fprintf(stream, "Point: %s\n", event->point);
+    fprintf(stream, "Year: %d\n", event->year);
+    fprintf(stream, "Month: %d\n", event->month);
+    fprintf(stream, "Day: %d\n", event->day);
+    fprintf(stream, "Hour: %d\n", event->hour);
+    fprintf(stream, "Minute: %d\n", event->minute);
 
     if (stream == stdout)
-        fprintf(stream, "ID: %d\n\n", book->ID);
+        fprintf(stream, "ID: %d\n\n", event->ID);
 }
 
-void searchInTitle(struct Book *book, char *data)
+void searchInDescription(struct Event *event, char *data)
 {
 
-    if (book == NULL)
+    if (event == NULL)
         return;
 
-    searchInTitle(book->smaller, data);
-    if (strstr(book->title, data) != NULL)
-        printBook(book, stdout);
-    searchInTitle(book->larger, data);
+    searchInDescription(event->smaller, data);
+    if (strstr(event->description, data) != NULL)
+        printEvent(event, stdout);
+    searchInDescription(event->larger, data);
 }
 
-void searchInAuthors(struct Book *book, char *data)
+void searchInPoint(struct Event *event, char *data)
 {
 
-    if (book == NULL)
+    if (event == NULL)
         return;
 
-    searchInAuthors(book->smaller, data);
-    if (strstr(book->authors, data) != NULL)
-        printBook(book, stdout);
-    searchInAuthors(book->larger, data);
+    searchInPoint(event->smaller, data);
+    if (strstr(event->point, data) != NULL)
+        printEvent(event, stdout);
+    searchInPoint(event->larger, data);
 }
 
-void searchInYear(struct Book *book, int data)
+void searchInYear(struct Event *event, int data)
 {
 
-    if (book == NULL)
+    if (event == NULL)
         return;
 
-    searchInYear(book->smaller, data);
-    if (book->year == data)
-        printBook(book, stdout);
-    searchInYear(book->larger, data);
+    searchInYear(event->smaller, data);
+    if (event->year == data)
+        printEvent(event, stdout);
+    searchInYear(event->larger, data);
 }
 
-void searchInDistributor(struct Book *book, char *data)
+void searchInMonth(struct Event *event, int data)
 {
 
-    if (book == NULL)
+    if (event == NULL)
         return;
 
-    searchInDistributor(book->smaller, data);
-    if (strstr(book->distributor, data) != NULL)
-        printBook(book, stdout);
-    searchInDistributor(book->larger, data);
+    searchInMonth(event->smaller, data);
+    if (event->month == data)
+        printEvent(event, stdout);
+    searchInMonth(event->larger, data);
 }
 
-void searchInRate(struct Book *book, int data)
+void searchInDay(struct Event *event, int data)
 {
 
-    if (book == NULL)
+    if (event == NULL)
         return;
 
-    searchInRate(book->smaller, data);
-    if (book->rate == data)
-        printBook(book, stdout);
-    searchInRate(book->larger, data);
+    searchInDay(event->smaller, data);
+    if (event->day == data)
+        printEvent(event, stdout);
+    searchInDay(event->larger, data);
 }
 
-void searchInCost(struct Book *book, int data)
+void searchInHour(struct Event *event, int data)
 {
 
-    if (book == NULL)
+    if (event == NULL)
         return;
 
-    searchInCost(book->smaller, data);
-    if (book->cost == data)
-        printBook(book, stdout);
-    searchInCost(book->larger, data);
+    searchInHour(event->smaller, data);
+    if (event->hour == data)
+        printEvent(event, stdout);
+    searchInHour(event->larger, data);
 }
 
-void searchBook()
+void searchInMinute(struct Event *event, int data)
+{
+
+    if (event == NULL)
+        return;
+
+    searchInMinute(event->smaller, data);
+    if (event->minute == data)
+        printEvent(event, stdout);
+    searchInMinute(event->larger, data);
+}
+
+void searchEvent()
 {
 
     char *fieldName = (char *)malloc(sizeof(char) * 13);
@@ -606,23 +636,23 @@ void searchBook()
     printf("Enter data: ");
     fflush(stdout);
 
-    if (!strncmp(fieldName, "title", 5))
+    if (!strncmp(fieldName, "descriptio", 12))
     {
         char *data = (char *)malloc(sizeof(char) * (64 * 1024 * 1024 + 1));
         fgets(data, 64 * 1024 * 1024, stdin);
         data[strlen(data) - 1] = 0;
 
-        searchInTitle(books, data);
+        searchInDescription(events, data);
 
         free(data);
     }
-    else if (!strncmp(fieldName, "authors", 7))
+    else if (!strncmp(fieldName, "point", 5))
     {
         char *data = (char *)malloc(sizeof(char) * (64 * 1024 * 1024 + 1));
         fgets(data, 64 * 1024 * 1024, stdin);
         data[strlen(data) - 1] = 0;
 
-        searchInAuthors(books, data);
+        searchInPoint(events, data);
 
         free(data);
     }
@@ -631,60 +661,68 @@ void searchBook()
         int data;
         scanf("%d", &data);
 
-        searchInYear(books, data);
+        searchInYear(events, data);
         char c;
         while ((c = fgetc(stdin)) != EOF && (c != '\n'))
             ;
     }
-    else if (!strncmp(fieldName, "distributo", 12))
-    {
-        char *data = (char *)malloc(sizeof(char) * (64 * 1024 * 1024 + 1));
-        fgets(data, 10, stdin);
-        fgets(data, 64 * 1024 * 1024, stdin);
-        data[strlen(data) - 1] = 0;
-
-        searchInDistributor(books, data);
-
-        free(data);
-    }
-    else if (!strncmp(fieldName, "rate", 4))
+    else if (!strncmp(fieldName, "month", 5))
     {
         int data;
         scanf("%d", &data);
 
-        searchInRate(books, data);
+        searchInMonth(events, data);
         char c;
         while ((c = fgetc(stdin)) != EOF && (c != '\n'))
             ;
     }
-    else if (!strncmp(fieldName, "cost", 4))
+    else if (!strncmp(fieldName, "day", 3))
     {
         int data;
         scanf("%d", &data);
 
-        searchInCost(books, data);
+        searchInDay(events, data);
         char c;
         while ((c = fgetc(stdin)) != EOF && (c != '\n'))
             ;
     }
+    else if (!strncmp(fieldName, "hour", 4))
+    {
+        int data;
+        scanf("%d", &data);
 
+        searchInHour(events, data);
+        char c;
+        while ((c = fgetc(stdin)) != EOF && (c != '\n'))
+            ;
+    }
+    else if (!strncmp(fieldName, "minute", 6))
+    {
+        int data;
+        scanf("%d", &data);
+
+        searchInMinute(events, data);
+        char c;
+        while ((c = fgetc(stdin)) != EOF && (c != '\n'))
+            ;
+    }
     free(fieldName);
 }
 
-struct Book *searchID(struct Book *book, int ID)
+struct Event *searchID(struct Event *event, int ID)
 {
 
-    if (book == NULL)
+    if (event == NULL)
         return NULL;
 
-    if (book->ID == ID)
-        return book;
-    struct Book *resultSmaller = searchID(book->smaller, ID);
+    if (event->ID == ID)
+        return event;
+    struct Event *resultSmaller = searchID(event->smaller, ID);
 
     if (resultSmaller != NULL)
         return resultSmaller;
 
-    return searchID(book->larger, ID);
+    return searchID(event->larger, ID);
 }
 
 void deleteID()
@@ -699,103 +737,11 @@ void deleteID()
     while ((c = fgetc(stdin)) != EOF && (c != '\n'))
         ;
 
-    struct Book *book = searchID(books, ID);
-    if (book == NULL)
-        printf("Could not find the book\n");
+    struct Event *event = searchID(events, ID);
+    if (event == NULL)
+        printf("Could not find the event\n");
     else
-        deleteBook(book, books);
-}
-
-void editID()
-{
-
-    printf("Print ID: ");
-    fflush(stdout);
-
-    int ID;
-    scanf("%d", &ID);
-    char c;
-    while ((c = fgetc(stdin)) != EOF && (c != '\n'))
-        ;
-
-    struct Book *book = searchID(books, ID);
-    if (book == NULL)
-        printf("Could not find the book\n");
-    else
-    {
-        char *buffer = (char *)malloc(sizeof(char) * (64 * 1024 * 1024 + 1));
-        for (int i = 0; i < 6; i++)
-        {
-
-            switch (i)
-            {
-            case 0:
-                printf("Title: ");
-                break;
-            case 1:
-                printf("Author(s): ");
-                break;
-            case 2:
-                printf("Year: ");
-                break;
-            case 3:
-                printf("Distributor: ");
-                break;
-            case 4:
-                printf("Rate: ");
-                break;
-            case 5:
-                printf("Cost: ");
-                break;
-            }
-            fflush(stdout);
-
-            fgets(buffer, 64 * 1024 * 1024, stdin);
-            buffer[strlen(buffer) - 1] = 0;
-            printf("%s - %d\n", buffer, atoi(buffer));
-
-            switch (i)
-            {
-            case 0:
-                if (strlen(buffer) > 0)
-                {
-                    free(book->title);
-                    book->title = (char *)malloc(sizeof(char) * strlen(buffer));
-                    strncpy(book->title, buffer, strlen(buffer));
-                }
-                break;
-            case 1:
-                if (strlen(buffer) > 0)
-                {
-                    free(book->authors);
-                    book->authors = (char *)malloc(sizeof(char) * strlen(buffer));
-                    strncpy(book->authors, buffer, strlen(buffer));
-                }
-                break;
-            case 2:
-                if (atoi(buffer) != 0)
-                    book->year = atoi(buffer);
-                break;
-            case 3:
-                if (strlen(buffer) > 0)
-                {
-                    free(book->distributor);
-                    book->distributor = (char *)malloc(sizeof(char) * strlen(buffer));
-                    strncpy(book->distributor, buffer, strlen(buffer));
-                }
-                break;
-            case 4:
-                if (atoi(buffer) != 0)
-                    book->rate = atoi(buffer);
-                break;
-            case 5:
-                if (atoi(buffer) != 0)
-                    book->cost = atoi(buffer);
-                break;
-            }
-        }
-
-    }
+        deleteEvent(event, events);
 }
 
 void loadFile(char *fileName)
@@ -812,9 +758,9 @@ void loadFile(char *fileName)
 
     while (!feof(inputFile))
     {
-        char *title = NULL, *authors = NULL, *distributor = NULL;
-        int rate = -1, year = -300, cost = -1;
-        for (int i = 0; i < 6; i++)
+        char *description = NULL, *point = NULL;
+        int month = 0, year = 2022, day = 0, hour = -1, minute = -1;
+        for (int i = 0; i < 7; i++)
         {
 
             fgets(buffer, 64 * 1024 * 1024, inputFile);
@@ -826,36 +772,38 @@ void loadFile(char *fileName)
             switch (i)
             {
             case 0:
-                title = (char *)malloc(sizeof(char) * strlen(buffer));
-                strncpy(title, buffer, strlen(buffer));
+                description = (char *)malloc(sizeof(char) * strlen(buffer));
+                strncpy(description, buffer, strlen(buffer));
                 break;
             case 1:
-                authors = (char *)malloc(sizeof(char) * strlen(buffer));
-                strncpy(authors, buffer, strlen(buffer));
+                point = (char *)malloc(sizeof(char) * strlen(buffer));
+                strncpy(point, buffer, strlen(buffer));
                 break;
             case 2:
                 year = atoi(buffer);
                 break;
             case 3:
-                distributor = (char *)malloc(sizeof(char) * strlen(buffer));
-                strncpy(distributor, buffer, strlen(buffer));
+                month = atoi(buffer);
                 break;
             case 4:
-                rate = atoi(buffer);
+                day = atoi(buffer);
                 break;
             case 5:
-                cost = atoi(buffer);
+                hour = atoi(buffer);
+                break;
+            case 6:
+                minute = atoi(buffer);
                 break;
             }
         }
 
-        if (title == NULL || authors == NULL || distributor == NULL || rate == -1 || cost == -1 || year == -300)
+        if (description == NULL || point == NULL || year == 2022 || month == -1 || day == -1 || hour == -1 || minute == -1)
             break;
 
-        struct Book *newBook = createBook(title, authors, year, distributor, rate, cost);
+        struct Event *newEvent = createEvent(description, point, year, month, day, hour, minute);
 
-        addBook(newBook, &books);
-        printBook(newBook, stdout);
+        addEvent(newEvent, &events);
+        printEvent(newEvent, stdout);
     }
 
     fclose(inputFile);
@@ -864,40 +812,30 @@ void loadFile(char *fileName)
     return;
 }
 
-void writeBook(struct Book *book, FILE *outputFile)
+void writeEvent(struct Event *event, FILE *outputFile)
 {
 
-    if (outputFile == NULL || book == NULL)
+    if (outputFile == NULL || event == NULL)
         return;
 
-    fprintf(outputFile, "%s\n", book->title);
-    fprintf(outputFile, "%s\n", book->authors);
-    fprintf(outputFile, "%d\n", book->year);
-    fprintf(outputFile, "%s\n", book->distributor);
-    fprintf(outputFile, "%d\n", book->rate);
-    fprintf(outputFile, "%d\n", book->cost);
+    fprintf(outputFile, "%s\n", event->description);
+    fprintf(outputFile, "%s\n", event->point);
+    fprintf(outputFile, "%d\n", event->year);
+    fprintf(outputFile, "%d\n", event->month);
+    fprintf(outputFile, "%d\n", event->day);
+    fprintf(outputFile, "%d\n", event->hour);
+    fprintf(outputFile, "%d\n", event->minute);
 }
 
-void wanderTreeLUR(struct Book *book, FILE *stream, void (*func)(struct Book *, FILE *))
+void wanderTreeLUR(struct Event *event, FILE *stream, void (*func)(struct Event *, FILE *))
 {
 
-    if (book == NULL)
+    if (event == NULL)
         return;
 
-    wanderTreeLUR(book->smaller, stream, func);
-    func(book, stream);
-    wanderTreeLUR(book->larger, stream, func);
-}
-
-void wanderTreeRUL(struct Book *book, FILE *stream, void (*func)(struct Book *, FILE *))
-{
-
-    if (book == NULL)
-        return;
-
-    wanderTreeRUL(book->smaller, stream, func);
-    func(book, stream);
-    wanderTreeRUL(book->larger, stream, func);
+    wanderTreeLUR(event->smaller, stream, func);
+    func(event, stream);
+    wanderTreeLUR(event->larger, stream, func);
 }
 
 void writeFile(char *fileName)
@@ -910,40 +848,43 @@ void writeFile(char *fileName)
         return;
     }
 
-    wanderTreeLUR(books, outputFile, writeBook);
+    wanderTreeLUR(events, outputFile, writeEvent);
 
     fclose(outputFile);
 }
 
-void parseBook()
+void parseEvent()
 {
 
     char *buffer = (char *)malloc(sizeof(char) * (64 * 1024 * 1024 + 1));
-    char *title, *authors, *distributor;
-    int rate, cost, year;
+    char *description, *point;
+    int month, day, year, hour, minute;
 
-    for (int i = 0; i < 6; i++)
+    for (int i = 0; i < 7; i++)
     {
 
         switch (i)
         {
         case 0:
-            printf("Title: ");
+            printf("Description: ");
             break;
         case 1:
-            printf("Author(s): ");
+            printf("Point: ");
             break;
         case 2:
             printf("Year: ");
             break;
         case 3:
-            printf("Distributor: ");
+            printf("Month: ");
             break;
         case 4:
-            printf("Rate: ");
+            printf("Day: ");
             break;
         case 5:
-            printf("Cost: ");
+            printf("Hour: ");
+            break;
+        case 6:
+            printf("Minute: ");
             break;
         }
         fflush(stdout);
@@ -954,37 +895,40 @@ void parseBook()
         switch (i)
         {
         case 0:
-            title = (char *)malloc(sizeof(char) * strlen(buffer));
-            strncpy(title, buffer, strlen(buffer));
+            description = (char *)malloc(sizeof(char) * strlen(buffer));
+            strncpy(description, buffer, strlen(buffer));
             break;
         case 1:
-            authors = (char *)malloc(sizeof(char) * strlen(buffer));
-            strncpy(authors, buffer, strlen(buffer));
+            point = (char *)malloc(sizeof(char) * strlen(buffer));
+            strncpy(point, buffer, strlen(buffer));
             break;
         case 2:
             year = atoi(buffer);
             break;
         case 3:
-            distributor = (char *)malloc(sizeof(char) * strlen(buffer));
-            strncpy(distributor, buffer, strlen(buffer));
+            month = atoi(buffer);
             break;
         case 4:
-            rate = atoi(buffer);
+            day = atoi(buffer);
             break;
         case 5:
-            cost = atoi(buffer);
+            hour = atoi(buffer);
+            break;
+        case 6:
+            minute = atoi(buffer);
             break;
         }
     }
 
-    if (title == NULL || authors == NULL || distributor == NULL || rate == -1 || cost == -1 || year == -300)
+    if (description == NULL || point == NULL || month == -1 || day == -1 || year == -300 || hour == -1
+        || minute == -1)
         return;
 
-    struct Book *newBook = createBook(title, authors, year, distributor, rate, cost);
+    struct Event *newEvent = createEvent(description, point, year, month, day, hour, minute);
 
-    addBook(newBook, &books);
+    addEvent(newEvent, &events);
 
-    printf("\nNEW ID IS -> %d\n", newBook->ID);
+    printf("\nNEW ID IS -> %d\n", newEvent->ID);
 }
 
 void enterInterectiveMode()
@@ -999,7 +943,7 @@ void enterInterectiveMode()
 
         printf("\n> ");
         fflush(stdout);
-        fgets(command, 64, stdin);
+        fgets(command, 65, stdin);
 
         command[strlen(command) - 1] = 0;
 
@@ -1016,7 +960,7 @@ void enterInterectiveMode()
         }
         else if (!strncmp(command, "add", 3))
         {
-            parseBook();
+            parseEvent();
         }
         else if (!strncmp(command, "print", 5))
         {
@@ -1024,9 +968,9 @@ void enterInterectiveMode()
             {
                 char fieldName[12];
                 strncpy(fieldName, command + 6, strlen(command) - 6);
-                resortBooks(fieldName);
+                resortEvents(fieldName);
             }
-            wanderTreeLUR(books, stdout, printBook);
+            wanderTreeLUR(events, stdout, printEvent);
         }
         else if (!strncmp(command, "save", 4))
         {
@@ -1041,15 +985,11 @@ void enterInterectiveMode()
         }
         else if (!strncmp(command, "search", 6))
         {
-            searchBook();
+            searchEvent();
         }
         else if (!strncmp(command, "delete", 6))
         {
             deleteID();
-        }
-        else if (!strncmp(command, "edit", 4))
-        {
-            editID();
         }
         else
         {
@@ -1065,16 +1005,6 @@ int main(int argc, char *argv[])
     {
         enterInterectiveMode();
         return 1;
-    }
-
-    if (!strcmp(argv[1], "-a") || !strcmp(argv[1], "--add"))
-    {
-        if (!checkInput(argc, argv))
-        {
-            printUsage();
-            return 1;
-        }
-        fastAddBook(argc, argv);
     }
 
     return 0;
